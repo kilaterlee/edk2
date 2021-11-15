@@ -1,0 +1,22 @@
+## @file
+# Download GCC LoongArch64 compiler from LoongArch GitHub release site
+# Set shell variable GCC5_LOONGARCH64_INSTALL to this folder
+#
+# This is only downloaded when a build activates scope gcc_loongarch64_unknown_linux
+#
+# Copyright (c) Microsoft Corporation.
+# Copyright (c) 2021 Loongson Technology Corporation Limited. All rights reserved.<BR>
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+{
+  "scope": "gcc_loongarch64_unknown_linux",
+  "type": "web",
+  "name": "gcc_loongarch64_unknown_linux",
+  "source": "https://github.com/loongson/build-tools/releases/download/2021.12.21/loongarch64-clfs-2021-12-18-cross-tools-gcc-full.tar.xz",
+  "version": "12.0.0 20210810",
+  "sha256": "07f4e93423e76c57c775390099c76273b67cde2e441ed78192a2f4da9168c65a",
+  "compression_type": "tar",
+  "internal_path": "/cross-tools/",
+  "flags": ["set_shell_var", ],
+  "var_name": "GCC5_LOONGARCH64_INSTALL"
+}
