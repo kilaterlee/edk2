@@ -409,6 +409,19 @@
   RiscV64/RiscVInterrupt.S          | GCC
   RiscV64/FlushCache.S              | GCC
 
+[Sources.LOONGARCH64]
+  Math64.c
+  LoongArch64/Unaligned.c
+  LoongArch64/InternalSwitchStack.c
+  LoongArch64/GetInterruptState.S   | GCC
+  LoongArch64/EnableInterrupts.S    | GCC
+  LoongArch64/DisableInterrupts.S   | GCC
+  LoongArch64/MemoryFence.S         | GCC
+  LoongArch64/CpuBreakpoint.S       | GCC
+  LoongArch64/CpuPause.S            | GCC
+  LoongArch64/SetJumpLongJump.S     | GCC
+  LoongArch64/SwitchStack.S         | GCC
+
 [Packages]
   MdePkg/MdePkg.dec
 
