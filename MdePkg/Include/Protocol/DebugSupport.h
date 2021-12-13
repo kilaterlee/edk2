@@ -654,17 +654,68 @@ typedef struct {
   UINT64    X31;
 } EFI_SYSTEM_CONTEXT_RISCV64;
 
+//
+// LoongArch processor exception types.
+//
+#define MAX_LOONGARCH_EXCEPTION 14
+
+typedef struct {
+  UINT64  R0;
+  UINT64  R1;
+  UINT64  R2;
+  UINT64  R3;
+  UINT64  R4;
+  UINT64  R5;
+  UINT64  R6;
+  UINT64  R7;
+  UINT64  R8;
+  UINT64  R9;
+  UINT64  R10;
+  UINT64  R11;
+  UINT64  R12;
+  UINT64  R13;
+  UINT64  R14;
+  UINT64  R15;
+  UINT64  R16;
+  UINT64  R17;
+  UINT64  R18;
+  UINT64  R19;
+  UINT64  R20;
+  UINT64  R21;
+  UINT64  R22;
+  UINT64  R23;
+  UINT64  R24;
+  UINT64  R25;
+  UINT64  R26;
+  UINT64  R27;
+  UINT64  R28;
+  UINT64  R29;
+  UINT64  R30;
+  UINT64  R31;
+
+  UINT64  CRMD;  // CuRrent MoDe information
+  UINT64  PRMD;  // PRe-exception MoDe information
+  UINT64  EUEN;  // Extended component Unit ENable
+  UINT64  MISC;  // MISCellaneous controller
+  UINT64  ECFG;  // Exception ConFiGuration
+  UINT64  ESTAT; // Exception STATus
+  UINT64  ERA;   // Exception Return Address
+  UINT64  BADV;  // BAD Virtual address
+  UINT64  BADI;  // BAD Instruction
+} EFI_SYSTEM_CONTEXT_LOONGARCH64;
+
 ///
 /// Universal EFI_SYSTEM_CONTEXT definition.
 ///
 typedef union {
-  EFI_SYSTEM_CONTEXT_EBC        *SystemContextEbc;
-  EFI_SYSTEM_CONTEXT_IA32       *SystemContextIa32;
-  EFI_SYSTEM_CONTEXT_X64        *SystemContextX64;
-  EFI_SYSTEM_CONTEXT_IPF        *SystemContextIpf;
-  EFI_SYSTEM_CONTEXT_ARM        *SystemContextArm;
-  EFI_SYSTEM_CONTEXT_AARCH64    *SystemContextAArch64;
-  EFI_SYSTEM_CONTEXT_RISCV64    *SystemContextRiscV64;
+  EFI_SYSTEM_CONTEXT_EBC          *SystemContextEbc;
+  EFI_SYSTEM_CONTEXT_IA32         *SystemContextIa32;
+  EFI_SYSTEM_CONTEXT_X64          *SystemContextX64;
+  EFI_SYSTEM_CONTEXT_IPF          *SystemContextIpf;
+  EFI_SYSTEM_CONTEXT_ARM          *SystemContextArm;
+  EFI_SYSTEM_CONTEXT_AARCH64      *SystemContextAArch64;
+  EFI_SYSTEM_CONTEXT_RISCV64      *SystemContextRiscV64;
+  EFI_SYSTEM_CONTEXT_LOONGARCH64  *SystemContextLoongArch64;
 } EFI_SYSTEM_CONTEXT;
 
 //
