@@ -4,6 +4,7 @@ Elf64 convert solution
 Copyright (c) 2010 - 2021, Intel Corporation. All rights reserved.<BR>
 Portions copyright (c) 2013-2014, ARM Ltd. All rights reserved.<BR>
 Portions Copyright (c) 2020, Hewlett Packard Enterprise Development LP. All rights reserved.<BR>
+Portions Copyright (c) 2021, Loongson Technology Corporation Limited. All rights reserved.<BR>
 
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -163,7 +164,7 @@ InitializeElf64 (
     Error (NULL, 0, 3000, "Unsupported", "ELF e_type not ET_EXEC or ET_DYN");
     return FALSE;
   }
-  if (!((mEhdr->e_machine == EM_X86_64) || (mEhdr->e_machine == EM_AARCH64) || (mEhdr->e_machine == EM_RISCV64))) {
+  if (!((mEhdr->e_machine == EM_X86_64) || (mEhdr->e_machine == EM_AARCH64) || (mEhdr->e_machine == EM_RISCV64) || (mEhdr->e_machine == EM_LOONGARCH64))) {
     Warning (NULL, 0, 3000, "Unsupported", "ELF e_machine is not Elf64 machine.");
   }
   if (mEhdr->e_version != EV_CURRENT) {
@@ -730,6 +731,7 @@ ScanSections64 (
   case EM_X86_64:
   case EM_AARCH64:
   case EM_RISCV64:
+  case EM_LOONGARCH64:
     mCoffOffset += sizeof (EFI_IMAGE_NT_HEADERS64);
   break;
   default:
@@ -943,6 +945,10 @@ ScanSections64 (
     NtHdr->Pe32Plus.FileHeader.Machine = EFI_IMAGE_MACHINE_RISCV64;
     NtHdr->Pe32Plus.OptionalHeader.Magic = EFI_IMAGE_NT_OPTIONAL_HDR64_MAGIC;
     break;
+  case EM_LOONGARCH64:
+    NtHdr->Pe32Plus.FileHeader.Machine = EFI_IMAGE_MACHINE_LOONGARCH64;
+    NtHdr->Pe32Plus.OptionalHeader.Magic = EFI_IMAGE_NT_OPTIONAL_HDR64_MAGIC;
+    break;
 
   default:
     VerboseMsg ("%s unknown e_machine type. Assume X64", (UINTN)mEhdr->e_machine);
@@ -1149,10 +1155,10 @@ WriteSections64 (
           }
 
           //
-          // Skip error on EM_RISCV64 becasue no symble name is built
-          // from RISC-V toolchain.
+          // Skip error on EM_RISCV64 and EM_LOONGARCH64 becasue no symble name is built
+          // from RISC-V and LoongArch toolchain.
           //
-          if (mEhdr->e_machine != EM_RISCV64) {
+          if ((mEhdr->e_machine != EM_RISCV64) && (mEhdr->e_machine != EM_LOONGARCH64)) {
             Error (NULL, 0, 3000, "Invalid",
                    "%s: Bad definition for symbol '%s'@%#llx or unsupported symbol type.  "
                    "For example, absolute and undefined symbols are not supported.",
@@ -1417,6 +1423,74 @@ WriteSections64 (
           // Write section for RISC-V 64 architecture.
           //
           WriteSectionRiscV64 (Rel, Targ, SymShdr, Sym);
+        } else if (mEhdr->e_machine == EM_LOONGARCH64) {
+          switch (ELF_R_TYPE(Rel->r_info)) {
+
+          case R_LARCH_SOP_PUSH_ABSOLUTE:
+            //
+            // Absolute relocation.
+            //
+            *(UINT64 *)Targ = *(UINT64 *)Targ - SymShdr->sh_addr + mCoffSectionsOffset[Sym->st_shndx];
+            break;
+
+          case R_LARCH_MARK_LA:
+          case R_LARCH_64:
+          case R_LARCH_NONE:
+          case R_LARCH_32:
+          case R_LARCH_RELATIVE:
+          case R_LARCH_COPY:
+          case R_LARCH_JUMP_SLOT:
+          case R_LARCH_TLS_DTPMOD32:
+          case R_LARCH_TLS_DTPMOD64:
+          case R_LARCH_TLS_DTPREL32:
+          case R_LARCH_TLS_DTPREL64:
+          case R_LARCH_TLS_TPREL32:
+          case R_LARCH_TLS_TPREL64:
+          case R_LARCH_IRELATIVE:
+          case R_LARCH_MARK_PCREL:
+          case R_LARCH_SOP_PUSH_PCREL:
+          case R_LARCH_SOP_PUSH_DUP:
+          case R_LARCH_SOP_PUSH_GPREL:
+          case R_LARCH_SOP_PUSH_TLS_TPREL:
+          case R_LARCH_SOP_PUSH_TLS_GOT:
+          case R_LARCH_SOP_PUSH_TLS_GD:
+          case R_LARCH_SOP_PUSH_PLT_PCREL:
+          case R_LARCH_SOP_ASSERT:
+          case R_LARCH_SOP_NOT:
+          case R_LARCH_SOP_SUB:
+          case R_LARCH_SOP_SL:
+          case R_LARCH_SOP_SR:
+          case R_LARCH_SOP_ADD:
+          case R_LARCH_SOP_AND:
+          case R_LARCH_SOP_IF_ELSE:
+          case R_LARCH_SOP_POP_32_S_10_5:
+          case R_LARCH_SOP_POP_32_U_10_12:
+          case R_LARCH_SOP_POP_32_S_10_12:
+          case R_LARCH_SOP_POP_32_S_10_16:
+          case R_LARCH_SOP_POP_32_S_10_16_S2:
+          case R_LARCH_SOP_POP_32_S_5_20:
+          case R_LARCH_SOP_POP_32_S_0_5_10_16_S2:
+          case R_LARCH_SOP_POP_32_S_0_10_10_16_S2:
+          case R_LARCH_SOP_POP_32_U:
+          case R_LARCH_ADD8:
+          case R_LARCH_ADD16:
+          case R_LARCH_ADD24:
+          case R_LARCH_ADD32:
+          case R_LARCH_ADD64:
+          case R_LARCH_SUB8:
+          case R_LARCH_SUB16:
+          case R_LARCH_SUB24:
+          case R_LARCH_SUB32:
+          case R_LARCH_SUB64:
+          case R_LARCH_GNU_VTINHERIT:
+          case R_LARCH_GNU_VTENTRY:
+            //
+            // These types are not used or do not need to fix the offsets.
+            //
+            break;
+          default:
+            Error (NULL, 0, 3000, "Invalid", "WriteSections64(): %s unsupported ELF EM_LOONGARCH64 relocation 0x%x.", mInImageName, (unsigned) ELF64_R_TYPE(Rel->r_info));
+          }
         } else {
           Error (NULL, 0, 3000, "Invalid", "Not a supported machine type");
         }
@@ -1646,6 +1720,77 @@ WriteRelocations64 (
 
             default:
               Error (NULL, 0, 3000, "Invalid", "WriteRelocations64(): %s unsupported ELF EM_RISCV64 relocation 0x%x.", mInImageName, (unsigned) ELF_R_TYPE(Rel->r_info));
+            }
+          } else if (mEhdr->e_machine == EM_LOONGARCH64) {
+            switch (ELF_R_TYPE(Rel->r_info)) {
+              case R_LARCH_MARK_LA:
+                CoffAddFixup(
+                  (UINT32) ((UINT64) mCoffSectionsOffset[RelShdr->sh_info]
+                  + (Rel->r_offset - SecShdr->sh_addr)),
+                  EFI_IMAGE_REL_BASED_LOONGARCH64_MARK_LA);
+                break;
+              case R_LARCH_64:
+                CoffAddFixup(
+                  (UINT32) ((UINT64) mCoffSectionsOffset[RelShdr->sh_info]
+                  + (Rel->r_offset - SecShdr->sh_addr)),
+                  EFI_IMAGE_REL_BASED_DIR64);
+                break;
+              case R_LARCH_NONE:
+              case R_LARCH_32:
+              case R_LARCH_RELATIVE:
+              case R_LARCH_COPY:
+              case R_LARCH_JUMP_SLOT:
+              case R_LARCH_TLS_DTPMOD32:
+              case R_LARCH_TLS_DTPMOD64:
+              case R_LARCH_TLS_DTPREL32:
+              case R_LARCH_TLS_DTPREL64:
+              case R_LARCH_TLS_TPREL32:
+              case R_LARCH_TLS_TPREL64:
+              case R_LARCH_IRELATIVE:
+              case R_LARCH_MARK_PCREL:
+              case R_LARCH_SOP_PUSH_PCREL:
+              case R_LARCH_SOP_PUSH_ABSOLUTE:
+              case R_LARCH_SOP_PUSH_DUP:
+              case R_LARCH_SOP_PUSH_GPREL:
+              case R_LARCH_SOP_PUSH_TLS_TPREL:
+              case R_LARCH_SOP_PUSH_TLS_GOT:
+              case R_LARCH_SOP_PUSH_TLS_GD:
+              case R_LARCH_SOP_PUSH_PLT_PCREL:
+              case R_LARCH_SOP_ASSERT:
+              case R_LARCH_SOP_NOT:
+              case R_LARCH_SOP_SUB:
+              case R_LARCH_SOP_SL:
+              case R_LARCH_SOP_SR:
+              case R_LARCH_SOP_ADD:
+              case R_LARCH_SOP_AND:
+              case R_LARCH_SOP_IF_ELSE:
+              case R_LARCH_SOP_POP_32_S_10_5:
+              case R_LARCH_SOP_POP_32_U_10_12:
+              case R_LARCH_SOP_POP_32_S_10_12:
+              case R_LARCH_SOP_POP_32_S_10_16:
+              case R_LARCH_SOP_POP_32_S_10_16_S2:
+              case R_LARCH_SOP_POP_32_S_5_20:
+              case R_LARCH_SOP_POP_32_S_0_5_10_16_S2:
+              case R_LARCH_SOP_POP_32_S_0_10_10_16_S2:
+              case R_LARCH_SOP_POP_32_U:
+              case R_LARCH_ADD8:
+              case R_LARCH_ADD16:
+              case R_LARCH_ADD24:
+              case R_LARCH_ADD32:
+              case R_LARCH_ADD64:
+              case R_LARCH_SUB8:
+              case R_LARCH_SUB16:
+              case R_LARCH_SUB24:
+              case R_LARCH_SUB32:
+              case R_LARCH_SUB64:
+              case R_LARCH_GNU_VTINHERIT:
+              case R_LARCH_GNU_VTENTRY:
+                //
+                // These types are not used or do not require fixup in PE format files.
+                //
+                break;
+              default:
+                  Error (NULL, 0, 3000, "Invalid", "WriteRelocations64(): %s unsupported ELF EM_LOONGARCH64 relocation 0x%x.", mInImageName, (unsigned) ELF64_R_TYPE(Rel->r_info));
             }
           } else {
             Error (NULL, 0, 3000, "Not Supported", "This tool does not support relocations for ELF with e_machine %u (processor type).", (unsigned) mEhdr->e_machine);

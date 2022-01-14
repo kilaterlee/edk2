@@ -5,6 +5,7 @@ Copyright (c) 2004 - 2018, Intel Corporation. All rights reserved.<BR>
 Portions Copyright (c) 2011 - 2013, ARM Ltd. All rights reserved.<BR>
 Portions Copyright (c) 2016 HP Development Company, L.P.<BR>
 Portions Copyright (c) 2020, Hewlett Packard Enterprise Development LP. All rights reserved.<BR>
+Portions Copyright (c) 2021, Loongson Technology Corporation Limited. All rights reserved.<BR>
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
@@ -57,6 +58,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 BOOLEAN mArm = FALSE;
 BOOLEAN mRiscV = FALSE;
+BOOLEAN mLoongArch = FALSE;
 STATIC UINT32   MaxFfsAlignment = 0;
 BOOLEAN VtfFileFlag = FALSE;
 
@@ -2417,6 +2419,102 @@ Returns:
 }
 
 EFI_STATUS
+UpdateLoongArchResetVectorIfNeeded (
+  IN MEMORY_FILE            *FvImage,
+  IN FV_INFO                *FvInfo
+  )
+/*++
+
+Routine Description:
+  This parses the FV looking for SEC and patches that address into the
+  beginning of the FV header.
+
+  For LoongArch ISA, the reset vector is at 0x1c000000.
+
+  We relocate it to SecCoreEntry and copy the ResetVector code to the
+  beginning of the FV.
+
+Arguments:
+  FvImage       Memory file for the FV memory image
+  FvInfo        Information read from INF file.
+
+Returns:
+
+  EFI_SUCCESS             Function Completed successfully.
+  EFI_ABORTED             Error encountered.
+  EFI_INVALID_PARAMETER   A required parameter was NULL.
+  EFI_NOT_FOUND           PEI Core file not found.
+
+--*/
+{
+  EFI_STATUS                  Status;
+  EFI_FILE_SECTION_POINTER    SecPe32;
+  BOOLEAN                     UpdateVectorSec = FALSE;
+  UINT16                      MachineType = 0;
+  EFI_PHYSICAL_ADDRESS        SecCoreEntryAddress = 0;
+
+  //
+  // Verify input parameters
+  //
+  if (FvImage == NULL || FvInfo == NULL) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  //
+  // Locate an SEC Core instance and if found extract the machine type and entry point address
+  //
+  Status = FindCorePeSection(FvImage->FileImage, FvInfo->Size, EFI_FV_FILETYPE_SECURITY_CORE, &SecPe32);
+  if (!EFI_ERROR(Status)) {
+
+    Status = GetCoreMachineType(SecPe32, &MachineType);
+    if (EFI_ERROR(Status)) {
+      Error(NULL, 0, 3000, "Invalid", "Could not get the PE32 machine type for SEC Core.");
+      return EFI_ABORTED;
+    }
+
+    Status = GetCoreEntryPointAddress(FvImage->FileImage, FvInfo, SecPe32, &SecCoreEntryAddress);
+    if (EFI_ERROR(Status)) {
+      Error(NULL, 0, 3000, "Invalid", "Could not get the PE32 entry point address for SEC Core.");
+      return EFI_ABORTED;
+    }
+
+    UpdateVectorSec = TRUE;
+  }
+
+  if (!UpdateVectorSec)
+    return EFI_SUCCESS;
+
+  if (MachineType == EFI_IMAGE_MACHINE_LOONGARCH64) {
+    UINT32                      ResetVector[3];
+    UINT32                      InstrStack;
+
+    memset(ResetVector, 0, sizeof (ResetVector));
+
+    /* if we found an SEC core entry point then generate a branch instruction */
+    if (UpdateVectorSec) {
+      VerboseMsg("UpdateLoongArchResetVectorIfNeeded updating LOONGARCH64 SEC vector");
+
+      InstrStack = (SecCoreEntryAddress >> 12) & 0xfffff;
+      ResetVector[0] = 0x14000001 | (InstrStack << 5);    /* lu12i.w ra si20 */
+
+      InstrStack = (SecCoreEntryAddress & 0x0fff);
+      ResetVector[1] = 0x03800021 | (InstrStack << 10);   /* ori ra, ra, ui12 */
+      ResetVector[2] = 0x4c000021;                        /* jirl ra, ra, 0 */
+    }
+
+    //
+    // Copy to the beginning of the FV
+    //
+    memcpy(FvImage->FileImage, ResetVector, sizeof (ResetVector));
+  } else {
+    Error(NULL, 0, 3000, "Invalid", "Unknown machine type");
+    return EFI_ABORTED;
+  }
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
 GetPe32Info (
   IN UINT8                  *Pe32,
   OUT UINT32                *EntryPoint,
@@ -2509,7 +2607,7 @@ Returns:
   //
   if ((*MachineType != EFI_IMAGE_MACHINE_IA32) &&  (*MachineType != EFI_IMAGE_MACHINE_X64) && (*MachineType != EFI_IMAGE_MACHINE_EBC) &&
       (*MachineType != EFI_IMAGE_MACHINE_ARMT) && (*MachineType != EFI_IMAGE_MACHINE_AARCH64) &&
-      (*MachineType != EFI_IMAGE_MACHINE_RISCV64)) {
+      (*MachineType != EFI_IMAGE_MACHINE_RISCV64) && (*MachineType != EFI_IMAGE_MACHINE_LOONGARCH64)) {
     Error (NULL, 0, 3000, "Invalid", "Unrecognized machine type in the PE32 file.");
     return EFI_UNSUPPORTED;
   }
@@ -2953,7 +3051,7 @@ Returns:
       goto Finish;
     }
 
-    if (!mArm && !mRiscV) {
+    if (!mArm && !mRiscV && !mLoongArch) {
       //
       // Update reset vector (SALE_ENTRY for IPF)
       // Now for IA32 and IA64 platform, the fv which has bsf file must have the
@@ -2996,6 +3094,19 @@ Returns:
      if (EFI_ERROR (Status)) {
        Error (NULL, 0, 3000, "Invalid", "Could not update the reset vector for RISC-V.");
        goto Finish;
+    }
+    //
+    // Update Checksum for FvHeader
+    //
+    FvHeader->Checksum = 0;
+    FvHeader->Checksum = CalculateChecksum16 ((UINT16 *) FvHeader, FvHeader->HeaderLength / sizeof (UINT16));
+  }
+
+  if (mLoongArch) {
+    Status = UpdateLoongArchResetVectorIfNeeded (&FvImageMemoryFile, &mFvDataInfo);
+    if (EFI_ERROR (Status)) {
+      Error (NULL, 0, 3000, "Invalid", "Could not update the reset vector.");
+      goto Finish;
     }
     //
     // Update Checksum for FvHeader
@@ -3450,6 +3561,11 @@ Returns:
         VerboseMsg("Located ARM/AArch64 SEC/PEI core in child FV");
         mArm = TRUE;
       }
+      // machine type is LOONGARCH64, set a flag so LOONGARCH64 reset vector procesing occurs
+      if ((MachineType == EFI_IMAGE_MACHINE_LOONGARCH64)) {
+        VerboseMsg("Located LOONGARCH64 SEC core in child FV");
+        mLoongArch = TRUE;
+      }
     }
 
     //
@@ -3606,6 +3722,10 @@ Returns:
 
     if (ImageContext.Machine == EFI_IMAGE_MACHINE_RISCV64) {
       mRiscV = TRUE;
+    }
+
+    if ( (ImageContext.Machine == EFI_IMAGE_MACHINE_LOONGARCH64) ) {
+      mLoongArch = TRUE;
     }
 
     //
@@ -3883,6 +4003,10 @@ Returns:
     if ( (ImageContext.Machine == EFI_IMAGE_MACHINE_ARMT) ||
          (ImageContext.Machine == EFI_IMAGE_MACHINE_AARCH64) ) {
       mArm = TRUE;
+    }
+
+    if ( (ImageContext.Machine == EFI_IMAGE_MACHINE_LOONGARCH64) ) {
+      mLoongArch = TRUE;
     }
 
     //
