@@ -178,6 +178,8 @@
         "vcruntimed",
         "ucrtd",
         "msvcrtd",
-        "XIPFLAGS"
+        "XIPFLAGS",
+        "Loongson",
+        "LOONGARCH"
     ]
 }
