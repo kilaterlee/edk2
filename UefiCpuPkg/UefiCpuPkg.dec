@@ -62,6 +62,10 @@
   ##  @libraryclass  Provides function for manipulating x86 paging structures.
   CpuPageTableLib|Include/Library/CpuPageTableLib.h
 
+[LibraryClasses.LoongArch64]
+  ##  @libraryclass  Provides macros and functions for the memory management unit.
+  CpuMmuLib|Include/Library/CpuMmuLib.h
+
   ## @libraryclass   Provides functions for manipulating smram savestate registers.
   MmSaveStateLib|Include/Library/MmSaveStateLib.h
 
