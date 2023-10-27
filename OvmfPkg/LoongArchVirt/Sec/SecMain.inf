@@ -1,0 +1,53 @@
+## @file
+#  SEC Driver
+#
+#  Copyright (c) 2023 Loongson Technology Corporation Limited. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SecMain
+  FILE_GUID                      = 57d02d4f-5a5d-4bfa-b7d6-ba0a4d2c72ce
+  MODULE_TYPE                    = SEC
+  VERSION_STRING                 = 1.0
+
+#
+#  VALID_ARCHITECTURES           = LOONGARCH64
+#
+
+[Sources]
+  LoongArch64/Start.S
+  SecMain.c
+
+[Packages]
+  OvmfPkg/OvmfPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  BaseMemoryLib
+  PcdLib
+  DebugAgentLib
+  IoLib
+  PeCoffLib
+  PeCoffGetEntryPointLib
+  PeCoffExtraActionLib
+  CpuExceptionHandlerLib
+
+[Ppis]
+  gEfiTemporaryRamSupportPpiGuid                # PPI ALWAYS_PRODUCED
+
+[FixedPcd]
+  gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecPeiTempRamBase
+  gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecPeiTempRamSize
+
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuExceptionVectorBaseAddress
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuMaxLogicalProcessorNumber
+
+  gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFdBaseAddress
