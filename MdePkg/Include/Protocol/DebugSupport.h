@@ -680,33 +680,45 @@ typedef struct {
   UINT32    STVAL;
 } EFI_SYSTEM_CONTEXT_RISCV64;
 
-//
-// LoongArch processor exception types.
-//
-#define EXCEPT_LOONGARCH_INT   0
-#define EXCEPT_LOONGARCH_PIL   1
-#define EXCEPT_LOONGARCH_PIS   2
-#define EXCEPT_LOONGARCH_PIF   3
-#define EXCEPT_LOONGARCH_PME   4
-#define EXCEPT_LOONGARCH_PNR   5
-#define EXCEPT_LOONGARCH_PNX   6
-#define EXCEPT_LOONGARCH_PPI   7
-#define EXCEPT_LOONGARCH_ADE   8
-#define EXCEPT_LOONGARCH_ALE   9
-#define EXCEPT_LOONGARCH_BCE   10
-#define EXCEPT_LOONGARCH_SYS   11
-#define EXCEPT_LOONGARCH_BRK   12
-#define EXCEPT_LOONGARCH_INE   13
-#define EXCEPT_LOONGARCH_IPE   14
-#define EXCEPT_LOONGARCH_FPD   15
-#define EXCEPT_LOONGARCH_SXD   16
-#define EXCEPT_LOONGARCH_ASXD  17
-#define EXCEPT_LOONGARCH_FPE   18
-#define EXCEPT_LOONGARCH_TBR   64 // For code only, there is no such type in the ISA spec, the TLB refill is defined for an independent exception.
+///
+/// LoongArch processor exception types.
+///
+#define EXCEPT_LOONGARCH_ECODE_SHIFT  16
+#define EXCEPT_LOONGARCH_INT          (0 << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_PIL          (1 << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_PIS          (2 << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_PIF          (3 << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_PME          (4 << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_PNR          (5 << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_PNX          (6 << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_PPI          (7 << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_ADE          (8 << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_ALE          (9 << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_BCE          (10  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_SYS          (11  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_BRK          (12  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_INE          (13  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_IPE          (14  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_FPD          (15  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_SXD          (16  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_ASXD         (17  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_FPE          (18  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_WPE          (19  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_BTD          (20  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_BTE          (21  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_GSPR         (22  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_HVC          (23  << EXCEPT_LOONGARCH_ECODE_SHIFT)
+#define EXCEPT_LOONGARCH_GCXC         (24  << EXCEPT_LOONGARCH_ECODE_SHIFT)
 
-//
-// LoongArch processor Interrupt types.
-//
+///
+/// For coding convenience, define the maximum valid
+/// LoongArch exception.
+///
+#define MAX_LOONGARCH_EXCEPTION  64
+
+///
+/// LoongArch processor Interrupt types.
+///
 #define EXCEPT_LOONGARCH_INT_SIP0   0
 #define EXCEPT_LOONGARCH_INT_SIP1   1
 #define EXCEPT_LOONGARCH_INT_IP0    2
@@ -721,11 +733,11 @@ typedef struct {
 #define EXCEPT_LOONGARCH_INT_TIMER  11
 #define EXCEPT_LOONGARCH_INT_IPI    12
 
-//
-// For coding convenience, define the maximum valid
-// LoongArch interrupt.
-//
-#define MAX_LOONGARCH_INTERRUPT  14
+///
+/// For coding convenience, define the maximum valid
+/// LoongArch interrupt.
+///
+#define MAX_LOONGARCH_INTERRUPT  16
 
 typedef struct {
   UINT64    R0;

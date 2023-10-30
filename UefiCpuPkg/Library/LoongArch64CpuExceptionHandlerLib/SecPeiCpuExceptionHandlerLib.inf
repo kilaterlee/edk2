@@ -1,0 +1,45 @@
+## @file
+#  LoongArch exception library instance for PEI and SEC modules.
+#
+#  Copyright (c) 2023, Loongson Technology Corporation Limited. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SecPeiCpuExceptionHandlerLib
+  MODULE_UNI_FILE                = SecPeiCpuExceptionHandlerLib.uni
+  FILE_GUID                      = 0D69E6CD-1423-F118-C4EF-7AA439BC3E3B
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = CpuExceptionHandlerLib|SEC PEI_CORE PEIM
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = LOONGARCH64
+#
+
+[Sources.LoongArch64]
+  LoongArch64/ArchExceptionHandler.c
+  LoongArch64/ExceptionHandlerAsm.S | GCC
+
+[Sources.common]
+  ExceptionCommon.h
+  ExceptionCommon.c
+  SecPeiExceptionLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  CpuLib
+  BaseLib
+  SerialPortLib
+  PrintLib
+  PeCoffGetEntryPointLib
+  SynchronizationLib

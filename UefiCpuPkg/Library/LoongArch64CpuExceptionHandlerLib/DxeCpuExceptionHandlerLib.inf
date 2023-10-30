@@ -1,0 +1,45 @@
+## @file
+#  LoongArch exception library instance for DXE modules.
+#
+#  Copyright (c) 2023, Loongson Technology Corporation Limited. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DxeCpuExceptionHandlerLib
+  MODULE_UNI_FILE                = DxeCpuExceptionHandlerLib.uni
+  FILE_GUID                      = 23C5D29F-F54B-091B-BD94-027576ED09FA
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = CpuExceptionHandlerLib|DXE_CORE DXE_DRIVER UEFI_APPLICATION
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = LOONGARCH64
+#
+
+[Sources.LoongArch64]
+  LoongArch64/ArchExceptionHandler.c
+  LoongArch64/ExceptionHandlerAsm.S | GCC
+
+[Sources.common]
+  ExceptionCommon.h
+  ExceptionCommon.c
+  DxeExceptionLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  CpuLib
+  BaseLib
+  SerialPortLib
+  PrintLib
+  PeCoffGetEntryPointLib
+  SynchronizationLib

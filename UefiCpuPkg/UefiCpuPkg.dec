@@ -3,6 +3,7 @@
 #
 # Copyright (c) 2007 - 2023, Intel Corporation. All rights reserved.<BR>
 # Copyright (C) 2023 Advanced Micro Devices, Inc. All rights reserved.<BR>
+# Copyright (c) 2023, Loongson Technology Corporation Limited. All rights reserved.<BR>
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -395,6 +396,11 @@
   #   FALSE - Access to any type of non-SMRAM memory after SmmReadyToLock is allowed.<BR>
   # @Prompt Access to non-SMRAM memory is restricted to reserved, runtime and ACPI NVS type after SmmReadyToLock.
   gUefiCpuPkgTokenSpaceGuid.PcdCpuSmmRestrictedMemoryAccess|TRUE|BOOLEAN|0x3213210F
+
+[PcdsFixedAtBuild.LoongArch64, PcdsPatchableInModule.LoongArch64, PcdsDynamic.LoongArch64, PcdsDynamicEx.LoongArch64]
+  ## Contains the pointer to a CPU exception vector base address.
+  # @Prompt The pointer to a CPU exception vector base address.
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuExceptionVectorBaseAddress|0x0|UINT64|0x62640000
 
 [PcdsDynamic, PcdsDynamicEx]
   ## Contains the pointer to a CPU S3 data buffer of structure ACPI_CPU_DATA.
