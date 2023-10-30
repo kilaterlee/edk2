@@ -1,0 +1,30 @@
+## @file
+#  Base CPU Timer Library
+#
+#  Provides base timer support using CPUCFG 0x4 and 0x5 stable counter frequency.
+#
+#  Copyright (c) 2023, Loongson Technology Corporation Limited. All rights reserved.<BR>
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                       = 0x00010005
+  BASE_NAME                         = BaseLoongArch64CpuTimerLib
+  FILE_GUID                         = 740389C7-CC44-4A2F-88DC-89D97D312E7C
+  MODULE_TYPE                       = BASE
+  VERSION_STRING                    = 1.0
+  LIBRARY_CLASS                     = TimerLib
+  MODULE_UNI_FILE                   = BaseLoongArch64CpuTimerLib.uni
+
+[Sources.common]
+  CpuTimerLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  PcdLib
+  DebugLib

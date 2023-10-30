@@ -1,0 +1,15 @@
+// /** @file
+// Base CPU Timer Library
+//
+// Provides base timer support using CPUCFG 0x4 and 0x5 stable counter frequency.
+//
+// Copyright (c) 2023, Loongson Technology Corporation Limited. All rights reserved.<BR>
+//
+// SPDX-License-Identifier: BSD-2-Clause-Patent
+//
+// **/
+
+
+#string STR_MODULE_ABSTRACT             #language en-US "LOONGARCH CPU Timer Library"
+
+#string STR_MODULE_DESCRIPTION          #language en-US "Provides basic timer support using CPUCFG 0x4 and 0x5 stable counter frequency."
