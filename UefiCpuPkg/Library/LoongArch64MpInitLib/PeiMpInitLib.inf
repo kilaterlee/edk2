@@ -1,0 +1,37 @@
+## @file
+#  LoongArch64 MP initialize support functions for PEI phase.
+#
+#  Copyright (c) 2023, Loongson Technology Corporation Limited. All rights reserved.<BR>
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PeiMpInitLib
+  MODULE_UNI_FILE                = PeiMpInitLib.uni
+  FILE_GUID                      = ED078F16-A2D3-2F34-9267-E24D56E91FCF
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.1
+  LIBRARY_CLASS                  = MpInitLib|PEIM
+
+[Sources.common]
+  PeiMpLib.c
+  MpLib.c
+  MpLib.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  MemoryAllocationLib
+  HobLib
+  CpuLib
+  SynchronizationLib
+  TimerLib
+
+[Pcd]
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuMaxLogicalProcessorNumber        ## CONSUMES
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuApInitTimeOutInMicroSeconds      ## CONSUMES

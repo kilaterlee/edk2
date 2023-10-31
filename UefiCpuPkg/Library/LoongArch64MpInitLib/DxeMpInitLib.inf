@@ -1,0 +1,45 @@
+## @file
+#  LoongArch64 MP initialize support functions for DXE phase.
+#
+#  Copyright (c) 2023, Loongson Technology Corporation Limited. All rights reserved.<BR>
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DxeMpInitLib
+  MODULE_UNI_FILE                = DxeMpInitLib.uni
+  FILE_GUID                      = C3B9ACAA-B67C-D3E0-E70D-7982B6EA2931
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.1
+  LIBRARY_CLASS                  = MpInitLib|DXE_DRIVER
+
+[Sources.common]
+  DxeMpLib.c
+  MpLib.c
+  MpLib.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  MemoryAllocationLib
+  HobLib
+  CpuLib
+  UefiBootServicesTableLib
+  DebugAgentLib
+  SynchronizationLib
+  TimerLib
+
+[Protocols]
+  gEfiTimerArchProtocolGuid                     ## SOMETIMES_CONSUMES
+
+[Pcd]
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuMaxLogicalProcessorNumber           ## CONSUMES
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuApInitTimeOutInMicroSeconds         ## CONSUMES
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuApStatusCheckIntervalInMicroSeconds ## CONSUMES
