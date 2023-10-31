@@ -213,6 +213,7 @@
   UefiCpuPkg/Library/LoongArch64CpuMmuLib/DxeCpuMmuLib.inf
   UefiCpuPkg/Library/LoongArch64MpInitLib/PeiMpInitLib.inf
   UefiCpuPkg/Library/LoongArch64MpInitLib/DxeMpInitLib.inf
+  UefiCpuPkg/CpuDxeLoongArch64/CpuDxe.inf
 
 [BuildOptions]
   *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES

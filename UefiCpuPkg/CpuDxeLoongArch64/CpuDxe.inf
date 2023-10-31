@@ -1,0 +1,60 @@
+## @file
+#  CPU driver installs CPU Architecture Protocol and CPU MP protocol.
+#
+#  Copyright (c) 2023, Loongson Technology Corporation Limited. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CpuDxe
+  MODULE_UNI_FILE                = CpuDxe.uni
+  FILE_GUID                      = BF954921-25C1-48C0-9BFB-8D0CD7EE92DA
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = CpuDxeInitialize
+
+[Sources.Common]
+  CpuDxe.c
+  CpuMp.c
+  Exception.c
+  CpuDxe.h
+  CpuMp.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  CacheMaintenanceLib
+  CpuLib
+  DebugLib
+  DxeServicesTableLib
+  HobLib
+  PeCoffGetEntryPointLib
+  UefiDriverEntryPoint
+  UefiLib
+  MpInitLib
+  CpuExceptionHandlerLib
+  CpuMmuLib
+
+[Protocols]
+  gEfiCpuArchProtocolGuid
+  gEfiMpServiceProtocolGuid
+
+[Guids]
+  gEfiDebugImageInfoTableGuid
+  gIdleLoopEventGuid
+  gEfiVectorHandoffTableGuid
+
+[Pcd]
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuExceptionVectorBaseAddress
+
+[Depex]
+ TRUE
