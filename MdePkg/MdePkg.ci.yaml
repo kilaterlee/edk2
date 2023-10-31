@@ -74,7 +74,8 @@
             "Test/UnitTest/Library/BaseSafeIntLib/TestBaseSafeIntLib.c",
             "Library/BaseFdtLib",
             "Library/MipiSysTLib/mipi_syst.h",
-            "Include/Register/Amd/SmramSaveStateMap.h"
+            "Include/Register/Amd/SmramSaveStateMap.h",
+            "Include/Register/LoongArch64/Cpucfg.h"
         ]
     },
     ## options defined ci/Plugin/CompilerPlugin
