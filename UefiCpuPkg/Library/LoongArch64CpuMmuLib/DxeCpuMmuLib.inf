@@ -1,0 +1,37 @@
+## @file
+#  CPU Memory Map Unit DXE phase driver.
+#
+#  Copyright (c) 2023 Loongson Technology Corporation Limited. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DxeCpuMmuLib
+  MODULE_UNI_FILE                = DxeCpuMmuLib.uni
+  FILE_GUID                      = DA8F0232-FB14-42F0-922C-63104D2C70BE
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = CpuMmuLib | DXE_DRIVER
+  CONSTRUCTOR                    = MmuInitialize
+
+#
+#  VALID_ARCHITECTURES           = LOONGARCH64
+#
+
+[Sources]
+  TlbOperation.S   | GCC
+  CommonMmuLib.c
+  Tlb.h
+  Page.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  PcdLib
+  DebugLib

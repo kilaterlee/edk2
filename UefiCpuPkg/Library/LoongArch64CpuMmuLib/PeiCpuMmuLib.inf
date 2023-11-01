@@ -1,0 +1,44 @@
+## @file
+#  CPU Memory Map Unit PEI phase driver.
+#
+#  Copyright (c) 2023 Loongson Technology Corporation Limited. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PeiCpuMmuLib
+  MODULE_UNI_FILE                = PeiCpuMmuLib.uni
+  FILE_GUID                      = F67EB983-AC2A-7550-AB69-3BC51A1C895B
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = CpuMmuLib | SEC PEIM
+
+#
+#  VALID_ARCHITECTURES           = LOONGARCH64
+#
+
+[Sources]
+  TlbOperation.S   | GCC
+  PeiCpuMmuLib.c
+  CommonMmuLib.c
+  CommonMmuLib.h
+  Tlb.h
+  Page.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[PCD]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdNullPointerDetectionPropertyMask
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuExceptionVectorBaseAddress
+
+[LibraryClasses]
+  MemoryAllocationLib
+  CacheMaintenanceLib
+  PcdLib
+  DebugLib
