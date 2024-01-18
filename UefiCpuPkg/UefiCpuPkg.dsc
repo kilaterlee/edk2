@@ -211,6 +211,8 @@
   UefiCpuPkg/Library/CpuTimerLib/LoongArch64/BaseLoongArch64CpuTimerLib.inf
   UefiCpuPkg/Library/CpuExceptionHandlerLib/LoongArch/DxeCpuExceptionHandlerLib.inf
   UefiCpuPkg/Library/CpuExceptionHandlerLib/LoongArch/SecPeiCpuExceptionHandlerLib.inf
+  UefiCpuPkg/Library/MpInitLib/LoongArch64/DxeMpInitLib.inf
+  UefiCpuPkg/Library/MpInitLib/LoongArch64/PeiMpInitLib.inf
 
 [BuildOptions]
   *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES
