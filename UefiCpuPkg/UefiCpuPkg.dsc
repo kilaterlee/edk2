@@ -207,5 +207,8 @@
   UefiCpuPkg/CpuTimerDxeRiscV64/CpuTimerDxeRiscV64.inf
   UefiCpuPkg/CpuDxeRiscV64/CpuDxeRiscV64.inf
 
+[Components.LOONGARCH64]
+  UefiCpuPkg/Library/CpuTimerLib/LoongArch64/BaseLoongArch64CpuTimerLib.inf
+
 [BuildOptions]
   *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES
