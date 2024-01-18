@@ -18,7 +18,7 @@
 #
 # The following information is for reference only and not required by the build tools.
 #
-#  VALID_ARCHITECTURES           = IA32 X64
+#  VALID_ARCHITECTURES           = IA32 X64 LOONGARCH64
 #
 
 [Sources.Ia32]
@@ -32,11 +32,18 @@
   X64/ArchExceptionHandler.c
   X64/ArchInterruptDefs.h
 
-[Sources.common]
+[Sources.Ia32, Sources.X64]
   CpuExceptionCommon.h
   CpuExceptionCommon.c
   PeiDxeSmmCpuException.c
   DxeException.c
+
+[Sources.LoongArch64]
+  LoongArch/LoongArch64/ArchExceptionHandler.c
+  LoongArch/LoongArch64/ExceptionHandlerAsm.S | GCC
+  LoongArch/DxeExceptionLib.c
+  LoongArch/ExceptionCommon.h
+  LoongArch/ExceptionCommon.c
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdCpuStackGuard
@@ -51,15 +58,18 @@
   MdeModulePkg/MdeModulePkg.dec
   UefiCpuPkg/UefiCpuPkg.dec
 
-[LibraryClasses]
+[LibraryClasses.common]
   BaseLib
-  SerialPortLib
-  PrintLib
-  SynchronizationLib
-  LocalApicLib
-  PeCoffGetEntryPointLib
-  MemoryAllocationLib
+  CpuLib
   DebugLib
+  MemoryAllocationLib
+  PeCoffGetEntryPointLib
+  PrintLib
+  SerialPortLib
+  SynchronizationLib
+
+[LibraryClasses.Ia32, LibraryClasses.X64]
+  LocalApicLib
   CcExitLib
 
 [BuildOptions]

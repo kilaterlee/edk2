@@ -385,6 +385,10 @@
   # @Prompt Enable performance collecting when processor trace is enabled.
   gUefiCpuPkgTokenSpaceGuid.PcdCpuProcTracePerformanceCollecting|FALSE|BOOLEAN|0x60000020
 
+  ## This PCD Contains the pointer to a CPU exception vector base address.
+  # @Prompt The pointer to a CPU exception vector base address.
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuExceptionVectorBaseAddress|0x0|UINT64|0x60000022
+
 [PcdsFixedAtBuild.X64, PcdsPatchableInModule.X64, PcdsDynamic.X64, PcdsDynamicEx.X64]
   ## Indicate access to non-SMRAM memory is restricted to reserved, runtime and ACPI NVS type after SmmReadyToLock.
   #  MMIO access is always allowed regardless of the value of this PCD.

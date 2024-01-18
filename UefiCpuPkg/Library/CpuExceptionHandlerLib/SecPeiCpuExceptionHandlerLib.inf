@@ -2,6 +2,7 @@
 #  CPU Exception Handler library instance for SEC/PEI modules.
 #
 #  Copyright (c) 2012 - 2022, Intel Corporation. All rights reserved.<BR>
+#  Copyright (c) 2024, Loongson Technology Corporation Limited. All rights reserved.<BR>
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 ##
@@ -18,7 +19,7 @@
 #
 # The following information is for reference only and not required by the build tools.
 #
-#  VALID_ARCHITECTURES           = IA32 X64
+#  VALID_ARCHITECTURES           = IA32 X64 LOONGARCH64
 #
 
 [Sources.Ia32]
@@ -32,22 +33,32 @@
   X64/ArchExceptionHandler.c
   X64/ArchInterruptDefs.h
 
-[Sources.common]
+[Sources.Ia32, Sources.X64]
   CpuExceptionCommon.h
   CpuExceptionCommon.c
   SecPeiCpuException.c
+
+[Sources.LoongArch64]
+  LoongArch/LoongArch64/ArchExceptionHandler.c
+  LoongArch/LoongArch64/ExceptionHandlerAsm.S | GCC
+  LoongArch/ExceptionCommon.h
+  LoongArch/ExceptionCommon.c
+  LoongArch/SecPeiExceptionLib.c
 
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   UefiCpuPkg/UefiCpuPkg.dec
 
-[LibraryClasses]
+[LibraryClasses.common]
   BaseLib
-  SerialPortLib
-  PrintLib
-  LocalApicLib
+  CpuLib
   PeCoffGetEntryPointLib
+  PrintLib
+  SerialPortLib
+
+[LibraryClasses.Ia32, LibraryClasses.X64]
+  LocalApicLib
   CcExitLib
 
 [Pcd]
