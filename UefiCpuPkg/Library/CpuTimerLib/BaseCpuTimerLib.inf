@@ -18,9 +18,12 @@
   LIBRARY_CLASS                  = TimerLib
   MODULE_UNI_FILE                = BaseCpuTimerLib.uni
 
-[Sources]
+[Sources.IA32, Sources.X64]
   CpuTimerLib.c
   BaseCpuTimerLib.c
+
+[Sources.LOONGARCH64]
+  LoongArch64/CpuTimerLib.c
 
 [Packages]
   MdePkg/MdePkg.dec
@@ -28,8 +31,9 @@
 
 [LibraryClasses]
   BaseLib
-  PcdLib
   DebugLib
+  PcdLib
+  SafeIntLib
 
 [Pcd]
   gUefiCpuPkgTokenSpaceGuid.PcdCpuCoreCrystalClockFrequency  ## CONSUMES
