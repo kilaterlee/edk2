@@ -3,6 +3,7 @@
 #
 # Copyright (c) 2007 - 2023, Intel Corporation. All rights reserved.<BR>
 # Copyright (C) 2023 Advanced Micro Devices, Inc. All rights reserved.<BR>
+# Copyright (c) 2024, Loongson Technology Corporation Limited. All rights reserved.<BR>
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -388,6 +389,10 @@
   #  FASLE - Performance collecting will be disabled in processor trace.<BR>
   # @Prompt Enable performance collecting when processor trace is enabled.
   gUefiCpuPkgTokenSpaceGuid.PcdCpuProcTracePerformanceCollecting|FALSE|BOOLEAN|0x60000020
+
+  ## This PCD Contains the pointer to a CPU exception vector base address.
+  # @Prompt The pointer to a CPU exception vector base address.
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuExceptionVectorBaseAddress|0x0|UINT64|0x60000022
 
 [PcdsFixedAtBuild.X64, PcdsPatchableInModule.X64, PcdsDynamic.X64, PcdsDynamicEx.X64]
   ## Indicate access to non-SMRAM memory is restricted to reserved, runtime and ACPI NVS type after SmmReadyToLock.
