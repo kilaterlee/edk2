@@ -486,5 +486,10 @@
   # @Prompt GHCB Hypervisor Features
   gUefiCpuPkgTokenSpaceGuid.PcdGhcbHypervisorFeatures|0x0|UINT64|0x60000018
 
+  ## This dynamic PCD indicates whether CPU MMU is enabled.
+  #  TRUE  - CPU MMU is enabled.
+  #  FASLE - CPU MMU have not enabled.
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuMmuIsEnabled|FALSE|BOOLEAN|0x60000023
+
 [UserExtensions.TianoCore."ExtraFiles"]
   UefiCpuPkgExtra.uni
